@@ -1,6 +1,11 @@
 #ifndef cards_hpp
 #define cards_hpp
-class deckOfCards
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <random>
+#include <chrono>
+class deckOfCards : public std::vector<std::string>
 {
 public:
 	deckOfCards();

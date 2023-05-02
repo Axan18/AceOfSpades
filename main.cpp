@@ -4,13 +4,15 @@
 #include <SFML/Main.hpp>
 #include <stack>
 #include <string>
+#include "player.hpp"
 
 int main()
 {
     deckOfCards cardDeck;
     cardDeck.shuffleDeck();
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Ace Of Spades");
-
+    Pot gamePot(15);
+    Player player();
     while (window.isOpen())
     {
         sf::Event action;
