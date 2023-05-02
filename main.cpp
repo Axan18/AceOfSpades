@@ -1,9 +1,14 @@
 #include "table.hpp"
+#include "cards.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Main.hpp>
+#include <stack>
+#include <string>
 
 int main()
 {
+    deckOfCards cardDeck;
+    cardDeck.shuffleDeck();
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Ace Of Spades");
 
     while (window.isOpen())
