@@ -1,19 +1,28 @@
 #include <SFML/Graphics.hpp>
 #include "table.hpp"
 
-void startScreen(sf::RenderWindow &window)
+
+void startScreen(sf::RenderWindow& window, bool& showStartScreen)
 {
-	sf::Sprite start, aceOfSpades; 
-	sf::Texture gameName; 
-	gameName.loadFromFile("images/startScreen.jpg"); 
-	aceOfSpades.setTexture(gameName); 
-	sf::Texture startButton; 
-	startButton.loadFromFile("images/startButton.png"); 
-	start.setTexture(startButton); 
-	start.setPosition(480,350); 
-	window.clear(sf::Color::Black); 
-	window.draw(aceOfSpades); 
-	window.draw(start); 
+	sf::Sprite start, aceOfSpades;
+	sf::Texture gameName;
+	gameName.loadFromFile("images/startScreen.jpg");
+	aceOfSpades.setTexture(gameName);
+	sf::Texture startButton;
+	startButton.loadFromFile("images/startButton.png");
+	start.setTexture(startButton);
+	start.setPosition(480, 350);
+	window.clear(sf::Color::Black);
+	window.draw(aceOfSpades);
+	window.draw(start);
+
+	auto mousePosition = sf::Mouse::getPosition(window);
+	auto translatedPosition = window.mapPixelToCoords(mousePosition);
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && start.getGlobalBounds().contains(translatedPosition))
+	{
+		showStartScreen = false; // zmiana flagi, ¿eby przejœæ do ekranu gry
+	}
 }
 void endingScreen(sf::RenderWindow &window, std::string image)
 {
