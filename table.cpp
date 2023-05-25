@@ -39,13 +39,18 @@ void endingScreen(sf::RenderWindow &window, std::string image)
 	window.clear(sf::Color::Black);
 	window.draw(inscription);
 }
-void buttons(sf::Sprite &foldButton, sf::Sprite  &checkOrCallButton, sf::Sprite  &raiseButton, sf::Sprite &moneyButton, sf::Sprite  &plusButton, sf::Sprite  &minusButton, sf::Texture &foldTexture, sf::Texture &checkOrCallTexture, sf::Texture &raiseTexture, sf::Texture &plusTexture, sf::Texture &minusTexture)
+void buttons(sf::Sprite &foldButton, sf::Sprite  &checkOrCallButton, sf::Sprite  &raiseButton, sf::Sprite &moneyButton, sf::Sprite  &plusButton, sf::Sprite  &minusButton, sf::Texture &foldTexture, sf::Texture &checkOrCallTexture, sf::Texture &raiseTexture, sf::Texture &plusTexture, sf::Texture &minusTexture, bool isRaised)
 {
 	foldTexture.loadFromFile("images/buttons/fold.png");
 	foldButton.setTexture(foldTexture);
 	raiseTexture.loadFromFile("images/buttons/raise.png");
 	raiseButton.setTexture(raiseTexture);
-	checkOrCallTexture.loadFromFile("images/buttons/check.png");
+	if(isRaised==true)
+		checkOrCallTexture.loadFromFile("images/buttons/call.png");
+	else
+	{
+		checkOrCallTexture.loadFromFile("images/buttons/check.png");
+	}
 	checkOrCallButton.setTexture(checkOrCallTexture);
 	plusTexture.loadFromFile("images/buttons/plus.png");
 	plusButton.setTexture(plusTexture);
@@ -101,8 +106,9 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	bot2Account.setString("kasa"); bot2Account.setCharacterSize(25); bot2Account.setFillColor(sf::Color::White); //Player2 money
 	
 	sf::Text player1Account;
+	int player1Cash = player.getMoney(); std::string player1CashString = std::to_string(player1Cash);
 	player1Account.setFont(font); player1Account.setPosition(300, 530); 
-	player1Account.setString("kasa"); player1Account.setCharacterSize(25); player1Account.setFillColor(sf::Color::White); //Player money
+	player1Account.setString(player1CashString); player1Account.setCharacterSize(25); player1Account.setFillColor(sf::Color::White); //Player money
 
 	sf::Text bot1CashIn;
 	bot1CashIn.setFont(font); bot1CashIn.setPosition(150, 65);
@@ -122,8 +128,9 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	gamePot.setString("JD"); gamePot.setCharacterSize(25); gamePot.setFillColor(sf::Color::White); //Gamepot 
 	
 	sf::Text callValue;
+	int callVal = Player::highestBet; std::string callValStr = std::to_string(callVal); 
 	callValue.setFont(font); callValue.setPosition(950, 530);
-	callValue.setString("JD"); callValue.setCharacterSize(25); callValue.setFillColor(sf::Color::White); // Call money
+	callValue.setString(callValStr); callValue.setCharacterSize(25); callValue.setFillColor(sf::Color::White); // Call money
 
 	sf::Text raiseValue;
 	int betVal = player.getBettingValue(); std::string betValStr = std::to_string(betVal); 
