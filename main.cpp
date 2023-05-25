@@ -72,6 +72,10 @@ int main()
                         player.raise(gamePot);
                     }
                 }
+                if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && foldButton.getGlobalBounds().contains(translatedPosition)) 
+                {
+					player.fold(); 
+				}
                 
             }
         }
@@ -81,7 +85,7 @@ int main()
         }
         else
         {
-            mainScreen(window, player, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton); 
+            mainScreen(window, player, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot); 
         }
         window.display();
        //endingScreen(window, "images/win.jpg");

@@ -71,7 +71,7 @@ void buttons(sf::Sprite &foldButton, sf::Sprite  &checkOrCallButton, sf::Sprite 
 
 }
 
-void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, sf::Sprite checkOrCallButton, sf::Sprite raiseButton, sf::Sprite moneyButton, sf::Sprite plusButton, sf::Sprite minusButton)
+void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, sf::Sprite checkOrCallButton, sf::Sprite raiseButton, sf::Sprite moneyButton, sf::Sprite plusButton, sf::Sprite minusButton, Pot &pot)
 {
 	sf::Font font;
 	try
@@ -94,7 +94,7 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	bot2.setString("Player2"); bot2.setCharacterSize(25); bot2.setFillColor(sf::Color::White); //Player2 name
 
 	sf::Text player1;
-	player1.setFont(font); player1.setPosition(300, 500);
+	player1.setFont(font); player1.setPosition(230, 500);
 	player1.setString("Player"); player1.setCharacterSize(25); player1.setFillColor(sf::Color::White); //Player name
 
 	sf::Text bot1Account;
@@ -106,8 +106,8 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	bot2Account.setString("kasa"); bot2Account.setCharacterSize(25); bot2Account.setFillColor(sf::Color::White); //Player2 money
 	
 	sf::Text player1Account;
-	int player1Cash = player.getMoney(); std::string player1CashString = std::to_string(player1Cash);
-	player1Account.setFont(font); player1Account.setPosition(300, 530); 
+	int player1Cash = player.getMoney(); std::string player1CashString = "Player money: "+std::to_string(player1Cash);
+	player1Account.setFont(font); player1Account.setPosition(230, 530); 
 	player1Account.setString(player1CashString); player1Account.setCharacterSize(25); player1Account.setFillColor(sf::Color::White); //Player money
 
 	sf::Text bot1CashIn;
@@ -119,16 +119,18 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	bot2CashIn.setString("kasaIN"); bot2CashIn.setCharacterSize(25); bot2CashIn.setFillColor(sf::Color::White); //Player2 cash in
 
 	sf::Text player1CashIn;
+	int player1WholeBet= player.getWholeBet(); std::string player1WholeBetStr = "Player whole bet: "+std::to_string(player1WholeBet); 
+	player1CashIn.setFont(font); player1CashIn.setPosition(230, 560); 
+	player1CashIn.setString(player1WholeBetStr); player1CashIn.setCharacterSize(25); player1CashIn.setFillColor(sf::Color::White); //Player cash in
 
-	player1CashIn.setFont(font); player1CashIn.setPosition(300, 560);
-	player1CashIn.setString("ca³y bet gracza"); player1CashIn.setCharacterSize(25); player1CashIn.setFillColor(sf::Color::White); //Player cash in
-
-	sf::Text gamePot;
-	gamePot.setFont(font); gamePot.setPosition(630, 330);
-	gamePot.setString("JD"); gamePot.setCharacterSize(25); gamePot.setFillColor(sf::Color::White); //Gamepot 
+	sf::Text gamePot; 
+	int potValue = pot.getPot(); 
+	std::string potValueStr = "Pot: "+std::to_string(potValue);
+	gamePot.setFont(font); gamePot.setPosition(600, 350);
+	gamePot.setString(potValueStr); gamePot.setCharacterSize(25); gamePot.setFillColor(sf::Color::White); //Gamepot 
 	
 	sf::Text callValue;
-	int callVal = Player::highestBet; std::string callValStr = std::to_string(callVal); 
+	int callVal = Player::getHighestBet(); std::string callValStr = std::to_string(callVal); 
 	callValue.setFont(font); callValue.setPosition(950, 530);
 	callValue.setString(callValStr); callValue.setCharacterSize(25); callValue.setFillColor(sf::Color::White); // Call money
 
@@ -170,8 +172,8 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 			commonCards[i].setScale(0.19f, 0.19f);  
 			window.draw(commonCards[i]);   
 		}
-	playerCardsTexture[0].loadFromFile("images/cards/" + player.hand1+".jpg");
-	playerCardsTexture[1].loadFromFile("images/cards/" + player.hand2+".jpg");
+	playerCardsTexture[0].loadFromFile("images/cards/" + player.getCard(1) + ".jpg");
+	playerCardsTexture[1].loadFromFile("images/cards/" + player.getCard(2) + ".jpg");
 	playerCards[0].setTexture(playerCardsTexture[0]);
 	playerCards[1].setTexture(playerCardsTexture[1]);
 	playerCards[0].setScale(0.19f, 0.19f); 

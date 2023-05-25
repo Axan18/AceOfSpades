@@ -4,8 +4,10 @@
 #include <SFML/Graphics.hpp>
 class Pot
 {
-public:
     int pot;
+public:
+    int getPot() const;
+    void setPot(int value);
     Pot(int pot);
 };
 class Player
@@ -32,8 +34,11 @@ public:
     int call(int highestBet, Pot& pot);
     int raise(Pot& pot);
     void check();
+    void fold(); 
     int getBettingValue() const;
     int getMoney() const;
+    int getWholeBet() const;
+    std::string getCard(int index) const;
 };
 class Bot : public Player
 {
