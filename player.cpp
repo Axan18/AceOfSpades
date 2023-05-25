@@ -12,7 +12,7 @@ Pot::Pot(int pot) {
 	this->pot = pot;
 }
 
-Player::Player(std::string card1, std::string card2,int bettingValue, int money, int wholeBet, int turn) : hand1(card1),hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), turn(turn){} 
+Player::Player(std::string card1, std::string card2,int bettingValue, int money, int wholeBet, bool isActionTaken) : hand1(card1),hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), isActionTaken(isActionTaken){} 
 void Player::highestBetInitialization(int value)
 {
 	highestBet = value;  
@@ -21,6 +21,10 @@ void Player::isRaisedInitialization(bool value)
 {
 	isRaised = value;
 }
+void Player::turnInitialization(int value)
+{
+	turn = value; 
+}
 bool Player::getIsRaised()
 {
 	return isRaised;
@@ -28,6 +32,10 @@ bool Player::getIsRaised()
 int Player::getHighestBet()
 {
 	return highestBet;
+}
+int Player::getTurn()
+{
+	return turn; 
 }
 int Player::getMoney() const
 {
@@ -56,24 +64,31 @@ int Player::call(int highestBet, Pot& pot)
 	pot.setPot(bettingValue); 
 	wholeBet+= bettingValue;
 	turn++;
+	isActionTaken = true;  
 	return bettingValue;
 }
+
 int Player::raise(Pot& pot)
 {
 	money -= bettingValue;
 	pot.setPot(bettingValue);
 	wholeBet+= bettingValue;
+	highestBet = bettingValue;
 	isRaised = true;
 	turn++;
+	isActionTaken = true; 
 	return 0;
 }
 void Player::check()
 {
 	turn++;
+	isActionTaken = true;
 }
+
 void Player::fold()
 {
 	turn = 0;
+	isActionTaken = true; 
 }
 std::string Player::getCard(int index) const
 {
@@ -86,7 +101,11 @@ int Player::getWholeBet() const
 {
 	return wholeBet;
 }
-Bot::Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, int turn) : Player(card1, card2, bettingValue, money, wholeBet, turn) 
+bool Player::getIsActionTaken() const
+{ 
+	return isActionTaken;
+}
+Bot::Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet) : Player(card1, card2, bettingValue, money, wholeBet, isActionTaken)  
 {
 	// pozosta³e pola klasy Bot mo¿na zainicjowaæ tutaj
 }

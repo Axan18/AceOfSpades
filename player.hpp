@@ -16,19 +16,20 @@ private:
     int bettingValue, money, wholeBet;
     static int highestBet;
     static bool isRaised;
-    int turn;
+    static int turn;
+    bool isActionTaken;
     std::string hand1, hand2;
-
-    friend void mainScreen(sf::RenderWindow& window, Player player, sf::Sprite foldButton, sf::Sprite checkOrCallButton, sf::Sprite raiseButton, sf::Sprite moneyButton, sf::Sprite plusButton, sf::Sprite minusButton);
     friend class Bot;
 
 public:
     Player();
-    Player(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, int turn);
+    Player(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken);
     static void highestBetInitialization(int value);
     static void isRaisedInitialization(bool value);
+    static void turnInitialization(int value);
     static bool getIsRaised() ;
     static int getHighestBet();
+    static int getTurn();
     int betIncrease();
     int betDecrease();
     int call(int highestBet, Pot& pot);
@@ -38,11 +39,12 @@ public:
     int getBettingValue() const;
     int getMoney() const;
     int getWholeBet() const;
+    bool getIsActionTaken() const;
     std::string getCard(int index) const;
 };
 class Bot : public Player
 {
 public:
-    Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, int turn);
+    Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet);
 };
 #endif
