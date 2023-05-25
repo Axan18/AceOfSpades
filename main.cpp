@@ -5,9 +5,13 @@
 #include <SFML/Main.hpp>
 #include <stack>
 #include <string>
+#include <iostream>
 
 int main()
 {
+    sf::Sprite foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton; //buttons for main screen
+    sf::Texture foldTexture, checkOrCallTexture, raiseTexture, plusTexture, minusTexture;
+    buttons(foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, foldTexture, checkOrCallTexture, raiseTexture, plusTexture, minusTexture);
     deckOfCards cardDeck;
     cardDeck.shuffleDeck();
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Ace Of Spades");
@@ -30,7 +34,21 @@ int main()
             if (action.type == sf::Event::Closed)
                 window.close();
             if (action.type == sf::Event::KeyPressed && action.key.code == sf::Keyboard::Escape)
-                window.close();    
+                window.close();
+            if (showStartScreen == false)
+            {
+                auto mousePosition = sf::Mouse::getPosition(window);
+                auto translatedPosition = window.mapPixelToCoords(mousePosition); 
+
+                if (action.type == sf::Event::MouseButtonPressed&& action.mouseButton.button == sf::Mouse::Left && plusButton.getGlobalBounds().contains(translatedPosition))   
+                {
+                    player.betIncrease();
+                }
+                if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && minusButton.getGlobalBounds().contains(translatedPosition))
+                {
+                    player.betDecrease();
+                }
+            }
         }
         if (showStartScreen)
         {
@@ -38,7 +56,12 @@ int main()
         }
         else
         {
-            mainScreen(window, player); 
+            mainScreen(window, player, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton); 
+            //sf::FloatRect foldButtonBounds = plusButton.getGlobalBounds();
+            //std::cout << "Fold Button Bounds: left=" << foldButtonBounds.left << ", top=" << foldButtonBounds.top << ", width=" << foldButtonBounds.width << ", height=" << foldButtonBounds.height << std::endl;
+            //// Analogicznie dla pozosta³ych przycisków
+            //std::cout << "Fold Button Texture: " << foldButton.getTextureRect().width << std::endl; 
+
         }
         window.display();
        //endingScreen(window, "images/win.jpg");
