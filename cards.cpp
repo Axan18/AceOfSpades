@@ -16,3 +16,4 @@ void deckOfCards::shuffleDeck()
 	std::default_random_engine rng(std::chrono::system_clock::now().time_since_epoch().count());
 	std::shuffle(this->begin(), this->end(), rng);
 }
+Card::Card(int value, std::string suit) : value(value), suit(suit) {}

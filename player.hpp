@@ -75,6 +75,7 @@ public:
     int getWholeBet() const override;
     bool getIsActionTaken() const override;
     std::string getCard(int index) const override;
-    double calculateChance();
+    double calculateChance(deckOfCards commonCards, int turn); 
+    double oddsCalculator(deckOfCards commonCards, int turn, std::string color1, std::string color2, int value1, int value2, deckOfCards tableCards); 
 };
 #endif

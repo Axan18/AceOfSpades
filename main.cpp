@@ -21,11 +21,15 @@ int main()
     Player* player = dynamic_cast<Player*>(abstractPlayer);
     Bot bot1(cardDeck[1], cardDeck[4], 15, 1000, 15);
     Bot bot2(cardDeck[2], cardDeck[5], 15, 1000, 15);
-
     for (int i = 0; i < 6; i++)
     {
         cardDeck.erase(cardDeck.begin());
 	}
+    deckOfCards commonCards;
+    for (int i = 0; i < 5; i++)
+    {
+        commonCards.push_back(cardDeck[i]);
+    }
     bool showStartScreen = true; 
     while (window.isOpen())
     {
@@ -93,7 +97,7 @@ int main()
         }
         else
         {
-            mainScreen(window, *player,bot1,bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot, cardDeck, AbstractPlayer::getTurn());
+            mainScreen(window, *player,bot1,bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot, commonCards, AbstractPlayer::getTurn()); 
             std::cout<<player->getTurn()<<std::endl;
         }
         window.display();

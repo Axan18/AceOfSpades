@@ -11,4 +11,14 @@ public:
 	deckOfCards();
 	void shuffleDeck();
 };
+struct Card
+{
+	int value;
+	std::string suit;
+	Card(int value, std::string suit);
+
+	bool operator<(const Card& other) const {
+		return value < other.value;
+	}
+};
 #endif

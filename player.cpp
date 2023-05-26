@@ -1,5 +1,8 @@
 #include <string>
 #include "player.hpp"
+#include "cards.hpp"
+#include <iostream>
+#include <algorithm>
 int Pot::getPot() const
 {
 	return pot;
@@ -168,13 +171,13 @@ bool Bot::getIsActionTaken() const
 {
 	return isActionTaken;
 }
-double Bot::calculateChance()
+double Bot::calculateChance(deckOfCards commonCards, int turn)
 { 
 	double chance = 0;
 	std::string color1 = hand1.substr(0, 1);
 	std::string color2 = hand2.substr(0, 1);
-	int value1 = stoi(hand1.substr(1, 3));
-	int value2 = stoi(hand2.substr(1, 3));
+	int value1 = stoi(hand1.substr(1, 2));
+	int value2 = stoi(hand2.substr(1, 2));
 	switch (turn)
 	{
 	case 1:
@@ -206,10 +209,59 @@ double Bot::calculateChance()
 			}
 		}
 		return chance;
+	case 2:
+		
 
 	}
 		
 	
+}
+double Bot::oddsCalculator(deckOfCards commonCards, int turn, std::string color1, std::string color2, int value1, int value2, deckOfCards tableCards)
+{
+	int stop = 0;
+	if (turn == 1)
+		stop = 3;
+	else if (turn == 2)
+		stop = 4;
+	else if (turn == 3)
+		stop = 5;
+	double highCard = 0;
+	double pair = 0;
+	double twoPair = 0;
+	double threeOfAKind = 0;
+	double straight = 0;
+	double flush = 0;
+	double fullHouse = 0;
+	double fourOfAKind = 0;
+	double straightFlush = 0;
+	double royalFlush = 0;
+	double cardsLeft;
+	switch (turn)
+	{
+	case 2: cardsLeft = 47; break;
+	case 3: cardsLeft = 46; break;
+	case 4: cardsLeft = 45; break;
+	}
+	std::vector< Card > cards;
+	cards.push_back(Card(value1, color1)); 
+	cards.push_back(Card(value2, color2));
+	for (int i = 0; i < stop; i++)
+		cards.push_back(Card(stoi(tableCards[i].substr(1,2)),tableCards[i].substr(0,1)));
+	std::sort(cards.begin(), cards.end());
+	//high card
+	{
+		int higherCard = std::max(value1, value2);
+		highCard = higherCard * 0.01;
+	}
+	//pair
+
+
+	
+
+
+
+
+
 }
 Bot::Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet) : Player(card1, card2, bettingValue, money, wholeBet, isActionTaken)
 {
