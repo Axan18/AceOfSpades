@@ -71,7 +71,7 @@ void buttons(sf::Sprite &foldButton, sf::Sprite  &checkOrCallButton, sf::Sprite 
 
 }
 
-void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, sf::Sprite checkOrCallButton, sf::Sprite raiseButton, sf::Sprite moneyButton, sf::Sprite plusButton, sf::Sprite minusButton, Pot &pot)
+void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::Sprite foldButton, sf::Sprite checkOrCallButton, sf::Sprite raiseButton, sf::Sprite moneyButton, sf::Sprite plusButton, sf::Sprite minusButton, Pot &pot)
 {
 	sf::Font font;
 	try
@@ -90,7 +90,7 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	bot1.setString("Player1"); bot1.setCharacterSize(25); bot1.setFillColor(sf::Color::White); //Player1 name
 
 	sf::Text bot2;
-	bot2.setFont(font); bot2.setPosition(1060, 5);
+	bot2.setFont(font); bot2.setPosition(900, 5);
 	bot2.setString("Player2"); bot2.setCharacterSize(25); bot2.setFillColor(sf::Color::White); //Player2 name
 
 	sf::Text player1;
@@ -98,12 +98,14 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	player1.setString("Player"); player1.setCharacterSize(25); player1.setFillColor(sf::Color::White); //Player name
 
 	sf::Text bot1Account;
+	int bot1Cash = botx.getMoney(); std::string bot1CashString = "Player1 money: " + std::to_string(bot1Cash);
 	bot1Account.setFont(font); bot1Account.setPosition(150,35); 
-	bot1Account.setString("kasa"); bot1Account.setCharacterSize(25); bot1Account.setFillColor(sf::Color::White); //Player1 money
+	bot1Account.setString(bot1CashString); bot1Account.setCharacterSize(25); bot1Account.setFillColor(sf::Color::White); //Player1 money
 
 	sf::Text bot2Account;
-	bot2Account.setFont(font); bot2Account.setPosition(1060, 35);  
-	bot2Account.setString("kasa"); bot2Account.setCharacterSize(25); bot2Account.setFillColor(sf::Color::White); //Player2 money
+	int bot2Cash = boty.getMoney(); std::string bot2CashString = "Player2 money: " + std::to_string(bot2Cash);
+	bot2Account.setFont(font); bot2Account.setPosition(900, 35);  
+	bot2Account.setString(bot2CashString); bot2Account.setCharacterSize(25); bot2Account.setFillColor(sf::Color::White); //Player2 money
 	
 	sf::Text player1Account;
 	int player1Cash = player.getMoney(); std::string player1CashString = "Player money: "+std::to_string(player1Cash);
@@ -111,12 +113,14 @@ void mainScreen(sf::RenderWindow &window, Player player, sf::Sprite foldButton, 
 	player1Account.setString(player1CashString); player1Account.setCharacterSize(25); player1Account.setFillColor(sf::Color::White); //Player money
 
 	sf::Text bot1CashIn;
+	int bot1WholeBet = botx.getWholeBet(); std::string bot1WholeBetStr = "Player1 whole bet: " + std::to_string(bot1WholeBet);
 	bot1CashIn.setFont(font); bot1CashIn.setPosition(150, 65);
-	bot1CashIn.setString("kasaIN"); bot1CashIn.setCharacterSize(25); bot1CashIn.setFillColor(sf::Color::White); //Player1 cash in
+	bot1CashIn.setString(bot1WholeBetStr); bot1CashIn.setCharacterSize(25); bot1CashIn.setFillColor(sf::Color::White); //Player1 cash in
 
 	sf::Text bot2CashIn;
-	bot2CashIn.setFont(font); bot2CashIn.setPosition(1060, 65);
-	bot2CashIn.setString("kasaIN"); bot2CashIn.setCharacterSize(25); bot2CashIn.setFillColor(sf::Color::White); //Player2 cash in
+	int bot2WholeBet = boty.getWholeBet(); std::string bot2WholeBetStr = "Player2 whole bet: " + std::to_string(bot2WholeBet);
+	bot2CashIn.setFont(font); bot2CashIn.setPosition(900, 65);
+	bot2CashIn.setString(bot2WholeBetStr); bot2CashIn.setCharacterSize(25); bot2CashIn.setFillColor(sf::Color::White); //Player2 cash in
 
 	sf::Text player1CashIn;
 	int player1WholeBet= player.getWholeBet(); std::string player1WholeBetStr = "Player whole bet: "+std::to_string(player1WholeBet); 

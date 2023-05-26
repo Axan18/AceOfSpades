@@ -11,20 +11,11 @@ void Pot::setPot(int value)
 Pot::Pot(int pot) {
 	this->pot = pot;
 }
-
+int AbstractPlayer::highestBet = 0;
+bool AbstractPlayer::isRaised = false;
+int AbstractPlayer::turn = 1; 
+Player::Player() : hand1(""), hand2(""), bettingValue(0), money(0), wholeBet(0), isActionTaken(false) {}
 Player::Player(std::string card1, std::string card2,int bettingValue, int money, int wholeBet, bool isActionTaken) : hand1(card1),hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), isActionTaken(isActionTaken){} 
-void Player::highestBetInitialization(int value)
-{
-	highestBet = value;  
-}
-void Player::isRaisedInitialization(bool value)
-{
-	isRaised = value;
-}
-void Player::turnInitialization(int value)
-{
-	turn = value; 
-}
 bool Player::getIsRaised()
 {
 	return isRaised;
@@ -110,4 +101,7 @@ Bot::Bot(std::string card1, std::string card2, int bettingValue, int money, int 
 	// pozosta³e pola klasy Bot mo¿na zainicjowaæ tutaj
 }
 
-
+int AbstractPlayer::betIncrease()
+{
+	return 0;
+}

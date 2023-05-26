@@ -6,9 +6,7 @@
 #include <stack>
 #include <string>
 #include <iostream>
-int Player::highestBet = 0;
-bool Player::isRaised = false;
-int Player::turn = 1;
+
 int main()
 {
     sf::Sprite foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton; //buttons for main screen
@@ -94,7 +92,7 @@ int main()
         }
         else
         {
-            mainScreen(window, player, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot);
+            mainScreen(window, player,bot1,bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot);
             std::cout<<player.getTurn()<<std::endl;
         }
         window.display();
