@@ -20,6 +20,9 @@ protected:
 
 
 public:
+    static bool getIsRaised();
+    static int getHighestBet();
+    static int getTurn();
     virtual int betIncrease()=0;
     virtual int betDecrease()=0;
     virtual int call(int highestBet, Pot& pot)=0;

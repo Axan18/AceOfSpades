@@ -101,6 +101,21 @@ Bot::Bot(std::string card1, std::string card2, int bettingValue, int money, int 
 	// pozosta³e pola klasy Bot mo¿na zainicjowaæ tutaj
 }
 
+bool AbstractPlayer::getIsRaised()
+{
+	return isRaised;
+}
+
+int AbstractPlayer::getHighestBet()
+{
+	return highestBet;
+}
+
+int AbstractPlayer::getTurn()
+{
+	return turn;
+}
+
 int AbstractPlayer::betIncrease()
 {
 	return 0;
