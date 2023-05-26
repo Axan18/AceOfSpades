@@ -48,9 +48,6 @@ private:
 public:
     Player();
     Player(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken);
-    static bool getIsRaised() ;
-    static int getHighestBet();
-    static int getTurn();
     int betIncrease() override;
     int betDecrease() override;
     int call(int highestBet, Pot& pot) override;
@@ -63,9 +60,21 @@ public:
     bool getIsActionTaken() const override;
     std::string getCard(int index) const override;
 };
-class Bot : public Player
+class Bot : public AbstractPlayer, public Player
 {
 public:
     Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet);
+    int betIncrease() override;
+    int betDecrease() override;
+    int call(int highestBet, Pot& pot) override;
+    int raise(Pot& pot) override;
+    void check() override;
+    void fold() override;
+    int getBettingValue() const override;
+    int getMoney() const override;
+    int getWholeBet() const override;
+    bool getIsActionTaken() const override;
+    std::string getCard(int index) const override;
+    double calculateChance();
 };
 #endif

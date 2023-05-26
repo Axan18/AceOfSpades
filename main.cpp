@@ -93,7 +93,7 @@ int main()
         }
         else
         {
-            mainScreen(window, *player,bot1,bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot);
+            mainScreen(window, *player,bot1,bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot, cardDeck, AbstractPlayer::getTurn());
             std::cout<<player->getTurn()<<std::endl;
         }
         window.display();

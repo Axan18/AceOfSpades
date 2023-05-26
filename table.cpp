@@ -71,7 +71,7 @@ void buttons(sf::Sprite &foldButton, sf::Sprite  &checkOrCallButton, sf::Sprite 
 
 }
 
-void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::Sprite foldButton, sf::Sprite checkOrCallButton, sf::Sprite raiseButton, sf::Sprite moneyButton, sf::Sprite plusButton, sf::Sprite minusButton, Pot &pot)
+void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::Sprite foldButton, sf::Sprite checkOrCallButton, sf::Sprite raiseButton, sf::Sprite moneyButton, sf::Sprite plusButton, sf::Sprite minusButton, Pot &pot, deckOfCards cards, int turn)
 {
 	sf::Font font;
 	try
@@ -144,7 +144,7 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 	raiseValue.setString(betValStr); raiseValue.setCharacterSize(25); raiseValue.setFillColor(sf::Color::White); //Raise money
 
 	sf::Sprite enemyCards[4], playerCards[2], commonCards[5], account[3], bet[3]; //cards & money
-	sf::Texture cardPlaceholder, playerCardsTexture[2], commondCardsTexture[5]; //textures
+	sf::Texture cardPlaceholder, playerCardsTexture[2], commonCardsTexture[5]; //textures
 	cardPlaceholder.loadFromFile("images/cards/back.jpg");
 	window.clear(sf::Color(0, 102, 0));
 	//card size: 104.5x149
@@ -152,7 +152,14 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 	enemyCards[0].setPosition(10, 10); 
 	enemyCards[1].setPosition(10, 169); 
 	enemyCards[2].setPosition(1165.5f, 10); 
-	enemyCards[3].setPosition(1165.5f, 169); 
+	enemyCards[3].setPosition(1165.5f, 169);
+	//enemy cards textures
+	for (int i = 0; i < 4; i++)
+	{
+		enemyCards[i].setTexture(cardPlaceholder);
+		enemyCards[i].setScale(0.19f, 0.19f);
+		window.draw(enemyCards[i]);
+	}
 	//common cards positioning 
 	int space = 169;
 	commonCards[0].setPosition(231.5f, 100);
@@ -164,18 +171,62 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 	playerCards[0].setPosition(505.5f, 500);
 	playerCards[1].setPosition(660, 500);
 
-		for (int i = 0; i < 4; i++)							//setting textures
-		{
-			enemyCards[i].setTexture(cardPlaceholder);
-			enemyCards[i].setScale(0.19f, 0.19f);
-			window.draw(enemyCards[i]);
-		}
+	//common cards textures
+	switch (turn)
+	{
+	case 1:
 		for (int i = 0; i < 5; i++)
 		{
 			commonCards[i].setTexture(cardPlaceholder); 
-			commonCards[i].setScale(0.19f, 0.19f);  
-			window.draw(commonCards[i]);   
+			commonCards[i].setScale(0.19f, 0.19f); 
+			window.draw(commonCards[i]);  
 		}
+		break;
+	case 2:
+		for (int i = 0; i < 5; i++)
+		{
+			if (i < 3)
+			{
+				commonCardsTexture[i].loadFromFile("images/cards/" + cards[i] + ".jpg");
+				commonCards[i].setTexture(commonCardsTexture[i]);
+				commonCards[i].setScale(0.19f, 0.19f);
+				window.draw(commonCards[i]);
+			}
+			else
+			{
+				commonCards[i].setTexture(cardPlaceholder);
+				commonCards[i].setScale(0.19f, 0.19f);
+				window.draw(commonCards[i]);
+			}
+		}
+	case 3:
+		for (int i = 0; i < 5; i++)
+		{
+			if (i < 3) 
+			{ 
+				commonCardsTexture[i].loadFromFile("images/cards/" + cards[i] + ".jpg"); 
+				commonCards[i].setTexture(commonCardsTexture[i]); 
+				commonCards[i].setScale(0.19f, 0.19f); 
+				window.draw(commonCards[i]); 
+			}
+			else
+			{
+				commonCards[i].setTexture(cardPlaceholder); 
+				commonCards[i].setScale(0.19f, 0.19f); 
+				window.draw(commonCards[i]);  
+			} 
+		}
+	case 4:
+		for (int i = 0; i < 5; i++)
+		{
+				commonCardsTexture[i].loadFromFile("images/cards/" + cards[i] + ".jpg"); 
+				commonCards[i].setTexture(commonCardsTexture[i]);  
+				commonCards[i].setScale(0.19f, 0.19f);
+				window.draw(commonCards[i]);
+		}
+	}
+
+		
 	playerCardsTexture[0].loadFromFile("images/cards/" + player.getCard(1) + ".jpg");
 	playerCardsTexture[1].loadFromFile("images/cards/" + player.getCard(2) + ".jpg");
 	playerCards[0].setTexture(playerCardsTexture[0]);
