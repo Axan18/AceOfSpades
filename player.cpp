@@ -252,10 +252,84 @@ double Bot::oddsCalculator(deckOfCards commonCards, int turn, std::string color1
 	{
 		int higherCard = std::max(value1, value2);
 		highCard = higherCard * 0.01;
+		highCard += 1 / ((cardsLeft - (14 - higherCard)) / (14 - higherCard));
 	}
-	//pair
+	//pair \ two of pair
+	int pairValue[2];
+	int pairCounter = 0;
+	for (int i=cards.size()-1; 0<i;i--)
+	{
+		if (cards[i].value == cards[i - 1].value)
+		{
+			pairValue[pairCounter] = cards[i].value;
+			i--; 
+			pairCounter++; 
+		}
+	}
+	switch (pairCounter)
+	{
+	case 0: 
+		pair = 1 / (((cardsLeft - 3*cards.size())/(3 * cards.size()))+1);
+		threeOfAKind =  1 /(1+(((cardsLeft - 3 * cards.size()) / (3 * cards.size()))  *  ((cardsLeft-1 - 2) / 2)));
+		break;
+	case 1:  
+		pair = pairValue[0] * 0.07;
+		threeOfAKind = 1 / (1+((cardsLeft - 2) / 2));
+		if (turn == 1)
+		{
+			threeOfAKind += 1 / (1 + (((cardsLeft - 3 * cards.size()) / (3 * cards.size())) * ((cardsLeft - 1 - 2) / 2)));
+		}
+		break;
+	case 2: 
+		pair = pairValue[0] * 0.07;
+		pair += pairValue[1] * 0.07;
+		threeOfAKind = 1 / (1 + (cardsLeft - 4) / 4);
+		break;
+	default: pair = 0; break;
+	}
+	//three of a kind
+	int threeValue;
+	for (int i = cards.size() - 1; 1 < i; i--)
+	{
+		if (cards[i].value == cards[i - 1].value && cards[i].value == cards[i - 2].value)
+		{
+
+				threeValue = cards[i].value; 
+				threeOfAKind = threeValue * 0.1;
+		}
+	}
+	//straight	
+	int straightValue=0;
+	for (int i =1; i<cards.size(); i++)
+	{
+		if (cards[0].value+i == cards[i].value && cards[0].suit != cards[i].suit) 
+		{
+			straightValue = cards[cards.size() - 1].value;
+		}
+	}
+	straight = straightValue * 0.15; 
+	//flushes
+	for (int i = 1; i < cards.size(); i++)
+	{
+		if (cards[0].suit == cards[i].suit && cards[0].value+i != cards[i].value)
+		{
+			flush = 2.2;
+		}
+		if(cards[0].suit == cards[i].suit && cards[0].value + i == cards[i].value)
+		{ 
+			straightFlush = 3.5;
+			if(cards[0].value==10)
+				royalFlush = 4.5; 
+		}
+
+	}
+	//full
 
 
+	//quads
+
+
+	
 	
 
 
