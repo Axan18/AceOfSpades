@@ -2,6 +2,7 @@
 #include "cards.hpp"
 #include "player.hpp"
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <SFML/Main.hpp>
 #include <stack>
 #include <string>
@@ -9,6 +10,26 @@
 
 int main()
 {
+    sf::Music music; 
+    try
+    {
+        if (!music.openFromFile("AoS.flac"))
+        {
+            throw std::runtime_error("Failed to open sound file");
+        }
+        music.setVolume(10);
+        music.play(); 
+    }
+    catch (const std::exception& e)
+    {
+        // Obs³uga b³êdu
+        std::cout << "Music error " << e.what() << std::endl;
+        // Dodatkowe dzia³ania naprawcze lub zakoñczenie programu
+    }
+    int ending = 0;
+    double playerBest;
+    double bot1Best;
+    double bot2Best;
     sf::Sprite foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton; //buttons for main screen
     sf::Texture foldTexture, checkOrCallTexture, raiseTexture, plusTexture, minusTexture;
     buttons(foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, foldTexture, checkOrCallTexture, raiseTexture, plusTexture, minusTexture, Player::getIsRaised());
@@ -19,13 +40,16 @@ int main()
     Pot gamePot(15);
     AbstractPlayer* abstractPlayer= new Player(cardDeck[0],cardDeck[3], 15, 1000, 15, false);
     Player* player = dynamic_cast<Player*>(abstractPlayer);
-    Bot bot1(cardDeck[1], cardDeck[4], 15, 1000, 15);
-    Bot bot2(cardDeck[2], cardDeck[5], 15, 1000, 15);
+    AbstractPlayer* abstractBot1 = new Bot(cardDeck[1], cardDeck[4], 15, 1000, 15); 
+    Bot* bot1 = dynamic_cast<Bot*>(abstractBot1);   
+    AbstractPlayer* abstractBot2 = new Bot(cardDeck[2], cardDeck[6], 15, 1000, 15);
+    Bot* bot2 = dynamic_cast<Bot*>(abstractBot2);  
     for (int i = 0; i < 6; i++)
     {
         cardDeck.erase(cardDeck.begin());
 	}
     deckOfCards commonCards;
+    commonCards.clear(); 
     for (int i = 0; i < 5; i++)
     {
         commonCards.push_back(cardDeck[i]);
@@ -54,7 +78,7 @@ int main()
                 {
                     player->betDecrease();
                 }
-                if (Player::getIsRaised() == true&&player->getIsActionTaken()==false && player->getTurn()<5)
+                if (AbstractPlayer::getIsRaised() == true&&player->getIsActionTaken()==false) 
                 {
                     if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && checkOrCallButton.getGlobalBounds().contains(translatedPosition)&&player->getMoney()>=Player::getHighestBet()&& player->getBettingValue() <= player->getMoney())
                     {
@@ -65,7 +89,7 @@ int main()
                         player->raise(gamePot);
                     }
                 } 
-                if (Player::getIsRaised() == false && player->getIsActionTaken() == false )
+                if (AbstractPlayer::getIsRaised() == false && player->getIsActionTaken() == false ) 
                 {
                     if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && checkOrCallButton.getGlobalBounds().contains(translatedPosition))
                     {
@@ -83,13 +107,32 @@ int main()
 
                 if (player->getIsActionTaken() == true)
                 {
-                    //Bot actions
+                    if(bot1->getIsFolded()!=true)
+                    bot1->makeDecision(commonCards, AbstractPlayer::getTurn(), gamePot); 
+                    if (bot2->getIsFolded() != true)
+                    bot2->makeDecision(commonCards, AbstractPlayer::getTurn(), gamePot);
+                    AbstractPlayer::raiseReset();
+                    AbstractPlayer::turnIncrementer();
+                    player->actionReset();
                 }
             }
-            //else
-            //{
-            //    //ending screen
-            //}
+            else if((showStartScreen == false && player->getTurn() == 5))
+            {
+              playerBest=player->bestHand(commonCards);
+              bot1Best=bot1->bestHand(commonCards);
+              bot2Best=bot2->bestHand(commonCards);
+
+              if (playerBest > bot1Best && playerBest > bot2Best)
+              {
+                  ending = 1;
+                  AbstractPlayer::turnIncrementer(); 
+              }
+              else
+              {
+                  ending = 2;
+                  AbstractPlayer::turnIncrementer(); 
+              }
+            }
         }
         if (showStartScreen)
         {
@@ -97,11 +140,17 @@ int main()
         }
         else
         {
-            mainScreen(window, *player,bot1,bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot, commonCards, AbstractPlayer::getTurn()); 
-            std::cout<<player->getTurn()<<std::endl;
+            if(ending==1)
+                endingScreen(window, "images/win.jpg");
+            else if(ending==2)
+                endingScreen(window, "images/lose.jpg");
+            else
+                mainScreen(window, *player,*bot1,*bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot, commonCards, AbstractPlayer::getTurn());
+
+            std::cout<<bot1->calculateChance(commonCards,player->getTurn())<<" //1" << std::endl; 
+            std::cout << bot2->calculateChance(commonCards, player->getTurn())<<" //2" << std::endl;
         }
         window.display();
-       //endingScreen(window, "images/win.jpg");
     }
     return 0;
 }

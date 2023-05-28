@@ -199,10 +199,11 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 				window.draw(commonCards[i]);
 			}
 		}
+		break;
 	case 3:
 		for (int i = 0; i < 5; i++)
 		{
-			if (i < 3) 
+			if (i < 4) 
 			{ 
 				commonCardsTexture[i].loadFromFile("images/cards/" + cards[i] + ".jpg"); 
 				commonCards[i].setTexture(commonCardsTexture[i]); 
@@ -216,6 +217,7 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 				window.draw(commonCards[i]);  
 			} 
 		}
+		break;
 	case 4:
 		for (int i = 0; i < 5; i++)
 		{
@@ -224,6 +226,7 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 				commonCards[i].setScale(0.19f, 0.19f);
 				window.draw(commonCards[i]);
 		}
+		break;
 	}
 
 		
