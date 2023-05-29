@@ -17,4 +17,6 @@ void deckOfCards::shuffleDeck()
 	std::shuffle(this->begin(), this->end(), rng);
 }
 
-Card::Card(int value, std::string suit) : value(value), suit(suit) {}
+Card::Card(int value, std::string suit) : value(value), suit(suit) {};
+deckOfCards::deckOfCards(deckOfCards& other) 
+	: std::vector<std::string>(other) {}; // copy constructor

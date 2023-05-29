@@ -22,9 +22,7 @@ int main()
     }
     catch (const std::exception& e)
     {
-        // Obs³uga b³êdu
         std::cout << "Music error " << e.what() << std::endl;
-        // Dodatkowe dzia³ania naprawcze lub zakoñczenie programu
     }
     int ending = 0;
     double playerBest;
@@ -43,17 +41,18 @@ int main()
     AbstractPlayer* abstractBot1 = new Bot(cardDeck[1], cardDeck[4], 15, 1000, 5, false, false);
     Bot* bot1 = dynamic_cast<Bot*>(abstractBot1);   
     AbstractPlayer* abstractBot2 = new Bot(cardDeck[2], cardDeck[6], 15, 1000, 10, false, false);
-    Bot* bot2 = dynamic_cast<Bot*>(abstractBot2);  
+    Bot* bot2 = dynamic_cast<Bot*>(abstractBot2); 
+
     for (int i = 0; i < 6; i++)
     {
         cardDeck.erase(cardDeck.begin());
 	}
-    deckOfCards commonCards;
-    commonCards.clear(); 
-    for (int i = 0; i < 5; i++)
+    deckOfCards commonCards(cardDeck);
+    for (int i = 0; i < 41; i++)
     {
-        commonCards.push_back(cardDeck[i]);
+        commonCards.erase(commonCards.begin());  
     }
+
     bool showStartScreen = true; 
     while (window.isOpen())
     {
@@ -152,9 +151,6 @@ int main()
                 endingScreen(window, "images/lose.jpg");
             else
                 mainScreen(window, *player,*bot1,*bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot, commonCards, AbstractPlayer::getTurn());
-            std::cout<<AbstractPlayer::getTurn()<<" //1" << std::endl;
-          //  std::cout<<bot1->calculateChance(commonCards,player->getTurn())<<" //1" << std::endl; 
-            //std::cout << bot2->calculateChance(commonCards, player->getTurn())<<" //2" << std::endl;
         }
         window.display();
     }

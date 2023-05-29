@@ -10,6 +10,7 @@ class deckOfCards : public std::vector<std::string>
 public:
 	deckOfCards();
 	void shuffleDeck();
+	deckOfCards(deckOfCards&);
 };
 struct Card
 {
