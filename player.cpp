@@ -18,11 +18,8 @@ Pot::Pot(int pot) {
 int AbstractPlayer::highestBet = 0;
 bool AbstractPlayer::isRaised = false;
 int AbstractPlayer::turn = 1; 
-AbstractPlayer::AbstractPlayer(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken)
-	:hand1(card1),hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), isActionTaken(isActionTaken) 
-{
-	// Tutaj mo¿esz umieœciæ dodatkow¹ logikê konstruktora
-}
+AbstractPlayer::AbstractPlayer(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken,bool isFolded)
+	:hand1(card1),hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), isActionTaken(isActionTaken), isFolded (isFolded) {}
 bool AbstractPlayer::getIsRaised()
 {
 	return isRaised;
@@ -79,7 +76,7 @@ double AbstractPlayer::bestHand(deckOfCards tableCards) const
 	//pair \ two of pair
 	int pairValue[2] = { 0,0 };
 	int pairCounter = 0;
-	for (int i = cards.size() - 1; 0 < i; i--)
+	for (int i = (int)cards.size() - 1; 0 < i; i--)  
 	{
 		if (cards[i].value == cards[i - 1].value)
 		{
@@ -100,7 +97,7 @@ double AbstractPlayer::bestHand(deckOfCards tableCards) const
 	}
 	//three of a kind
 	int threeValue;
-	for (int i = cards.size() - 1; 1 < i; i--)
+	for (int i = (int)cards.size() - 1; 1 < i; i--)
 	{
 		if (cards[i].value == cards[i - 1].value && cards[i].value == cards[i - 2].value)
 		{
@@ -112,7 +109,7 @@ double AbstractPlayer::bestHand(deckOfCards tableCards) const
 	//straight	
 	int straightValue = 0;
 	int counter=0;
-	for (int i = 0; i < cards.size()-1; i++)
+	for (int i = 0; i < (int)cards.size()-1; i++)
 	{
 		if (cards[i].value + 1 == cards[i+1].value)
 		{
@@ -141,7 +138,7 @@ double AbstractPlayer::bestHand(deckOfCards tableCards) const
 	}
 	if (suitCounts[0] >= 5 || suitCounts[1] >= 5 || suitCounts[2] >= 5 || suitCounts[3] >= 5)
 	{
-		for (int i = 0; i < cards.size() - 1; i++) 
+		for (int i = 0; i < (int)cards.size() - 1; i++)
 		{
 			if (cards[i].value + 1 == cards[i + 1].value) 
 			{
@@ -162,7 +159,7 @@ double AbstractPlayer::bestHand(deckOfCards tableCards) const
 	if (threeOfAKind != 0 && pairCounter == 1 && pairValue[0] != threeValue)
 		fullHouse = threeOfAKind; 
 	//quads
-	for (int i = cards.size() - 1; 2 < i; i--)
+	for (int i = (int)cards.size() - 1; 2 < i; i--)
 	{
 		if (cards[i].value == cards[i - 1].value && cards[i].value == cards[i - 2].value && cards[i].value == cards[i - 3].value)
 		{
@@ -191,11 +188,9 @@ double AbstractPlayer::bestHand(deckOfCards tableCards) const
 		return 1+(highCard*0.01);
 }
 //######## Player ######################################
-Player::Player(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken) 
-	: hand1(card1), hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), isActionTaken(isActionTaken), 
-	AbstractPlayer(card1, card2, bettingValue, money, wholeBet, isActionTaken) { 
-	// Inicjalizacja pól specyficznych dla Player
-}
+Player::Player(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken, bool isFolded)
+	: hand1(card1), hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), isActionTaken(isActionTaken), isFolded(isFolded),
+	AbstractPlayer(card1, card2, bettingValue, money, wholeBet, isActionTaken, isFolded) {}
 int Player::getMoney() const
 {
 	return money; 
@@ -293,6 +288,7 @@ int Bot::call(int highestBet, Pot& pot)
 	money -= bettingValue;
 	pot.setPot(bettingValue);
 	wholeBet += bettingValue;
+	actionType= "call";
 	return bettingValue;
 }
 void Bot::raise(Pot& pot)
@@ -301,15 +297,17 @@ void Bot::raise(Pot& pot)
 	pot.setPot(bettingValue);
 	wholeBet += bettingValue;
 	highestBet = bettingValue;
+	actionType = "raise"; 
 	AbstractPlayer::isRaised = true; 
 }
 void Bot::check()
 {
-
+	actionType = "check";
 }
 void Bot::fold()
 {
-	isFolded = true; 
+	isFolded = true;  
+	actionType = "fold"; 
 }
 std::string Bot::getCard(int index) const
 {
@@ -338,9 +336,9 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 		case 1:
 			if (chance >= 0.6)
 			{
-				if (this->getMoney() > AbstractPlayer::getHighestBet() + (log(2 * chance) / 4) * money)
+				if (this->getMoney() > AbstractPlayer::getHighestBet() + (int)(log(2 * chance) / 4) * money)
 				{
-				this->bettingValue = AbstractPlayer::getHighestBet() + log(2 * chance) / 4;
+				this->bettingValue = AbstractPlayer::getHighestBet() + (int)log(2 * chance) / 4;
 				}
 				else
 				{
@@ -375,11 +373,11 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				this->fold();
 			break;
 		case 2:
-			if (chance >= 1.2)
+			if (chance >= 3)
 			{
-				if (this->getMoney() > AbstractPlayer::getHighestBet() + (log(2 * chance) / 4) * money)
+				if (this->getMoney() > AbstractPlayer::getHighestBet() + (int)(log(2 * chance) / 4) * money)
 				{
-					this->bettingValue = AbstractPlayer::getHighestBet() + log(2 * chance) / 4;
+					this->bettingValue = AbstractPlayer::getHighestBet() + (int)log(2 * chance) / 4;
 				}
 				else
 				{
@@ -387,7 +385,7 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				}
 				this->raise(gamePot);
 			}
-			else if (chance > 0.9 && chance < 1.2)
+			else if (chance > 2 && chance < 3)
 			{
 				if (this->getMoney() > AbstractPlayer::getHighestBet() + 200)
 				{
@@ -399,7 +397,7 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				}
 				this->call(AbstractPlayer::getHighestBet(), gamePot);
 			}
-			else if (chance > 0.7 && chance <= 0.9)
+			else if (chance > 1 && chance <= 2)
 			{
 				if (this->getMoney() > AbstractPlayer::getHighestBet() + 100)
 				{
@@ -411,7 +409,7 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				}
 				this->call(AbstractPlayer::getHighestBet(), gamePot);
 			}
-			else if (chance <= 0.7 && chance >= 0.45)
+			else if (chance <= 1 && chance >= 0.45)
 			{
 				if (AbstractPlayer::getIsRaised() == true)
 				{
@@ -426,11 +424,11 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				this->fold();
 			break;
 		case 3:
-			if (chance >= 1.2)
+			if (chance >= 3)
 			{
-				if (this->getMoney() > AbstractPlayer::getHighestBet() + (log(2 * chance) / 4) * money)
+				if (this->getMoney() > AbstractPlayer::getHighestBet() + (int)(log(2 * chance) / 4) * money)
 				{
-					this->bettingValue = AbstractPlayer::getHighestBet() + log(2 * chance) / 4;
+					this->bettingValue = AbstractPlayer::getHighestBet() + (int)log(2 * chance) / 4;
 				}
 				else
 				{
@@ -438,7 +436,7 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				}
 				this->raise(gamePot);
 			}
-			else if (chance > 0.9 && chance < 1.2)
+			else if (chance > 2 && chance < 3)
 			{
 				if (this->getMoney() > AbstractPlayer::getHighestBet() + 200)
 				{
@@ -450,7 +448,7 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				}
 				this->call(AbstractPlayer::getHighestBet(), gamePot);
 			}
-			else if (chance > 0.7 && chance <= 0.9)
+			else if (chance > 1 && chance <= 2)
 			{
 				if (this->getMoney() > AbstractPlayer::getHighestBet() + 100)
 				{
@@ -462,7 +460,7 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 				}
 				this->call(AbstractPlayer::getHighestBet(), gamePot);
 			}
-			else if (chance <= 0.7 && chance >= 0.45)
+			else if (chance <= 1 && chance >= 0.45)
 			{
 				if (AbstractPlayer::getIsRaised() == true)
 				{
@@ -476,8 +474,13 @@ void Bot::makeDecision(deckOfCards commonCards, int turn, Pot& gamePot)
 			else
 				this->fold();
 			break;
+			break;
 		default: this->fold(); 
 	}
+}
+std::string Bot::getActionType() const 
+{
+	return actionType;  
 }
 double Bot::calculateChance(deckOfCards commonCards, int turn) 
 { 
@@ -567,7 +570,7 @@ double Bot::oddsCalculator( int turn, std::string color1, std::string color2, in
 	//pair \ two of pair
 	int pairValue[2] = { 0,0 };
 	int pairCounter = 0;
-	for (int i=cards.size()-1; 0<i;i--)
+	for (int i= (int)cards.size()-1; 0<i;i--)
 	{
 		if (cards[i].value == cards[i - 1].value)
 		{
@@ -599,7 +602,7 @@ double Bot::oddsCalculator( int turn, std::string color1, std::string color2, in
 	}
 	//three of a kind
 	int threeValue=0;
-	for (int i = cards.size() - 1; 1 < i; i--)
+	for (int i = (int)cards.size() - 1; 1 < i; i--)
 	{
 		if (cards[i].value == cards[i - 1].value && cards[i].value == cards[i - 2].value)
 		{
@@ -623,7 +626,7 @@ double Bot::oddsCalculator( int turn, std::string color1, std::string color2, in
 	}
 	if (suitCounts[0] >= 5 || suitCounts[1] >= 5 || suitCounts[2] >= 5 || suitCounts[3] >= 5)
 	{
-		for (int i = 0; i < cards.size() - 1; i++) 
+		for (int i = 0; i < (int)cards.size() - 1; i++)
 		{
 			if (cards[i].value + 1 == cards[i + 1].value) 
 			{
@@ -643,7 +646,7 @@ double Bot::oddsCalculator( int turn, std::string color1, std::string color2, in
 	if(threeOfAKind!=0 && pairCounter==1 && pairValue[0]!=threeValue)
 		fullHouse = 2.7;
 	//quads
-	for (int i = cards.size() - 1; 2 < i; i--)
+	for (int i = (int)cards.size() - 1; 2 < i; i--)
 	{
 		if (cards[i].value == cards[i - 1].value && cards[i].value == cards[i - 2].value && cards[i].value == cards[i - 3].value)
 		{
@@ -652,6 +655,6 @@ double Bot::oddsCalculator( int turn, std::string color1, std::string color2, in
 	}
 	return highCard + pair + twoPair + threeOfAKind + straight + flush + fullHouse + fourOfAKind + straightFlush + royalFlush; 
 } 
-Bot::Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet)
-	: hand1(card1), hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), 
-	AbstractPlayer(card1, card2, bettingValue, money, wholeBet, isActionTaken) { }
+Bot::Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken, bool isFolded)
+	: hand1(card1), hand2(card2), bettingValue(bettingValue), money(money), wholeBet(wholeBet), isActionTaken(isActionTaken), isFolded(isFolded),
+	AbstractPlayer(card1, card2, bettingValue, money, wholeBet, isActionTaken, isFolded) {} 

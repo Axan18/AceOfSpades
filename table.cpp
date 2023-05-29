@@ -25,9 +25,6 @@ void startScreen(sf::RenderWindow& window, bool& showStartScreen)
 	{
 		showStartScreen = false; // zmiana flagi, ¿eby przejœæ do ekranu gry
 		sf::FloatRect foldButtonBounds = start.getGlobalBounds();
-		std::cout << "Fold Button Bounds: left=" << foldButtonBounds.left << ", top=" << foldButtonBounds.top << ", width=" << foldButtonBounds.width << ", height=" << foldButtonBounds.height << std::endl;
-		// Analogicznie dla pozosta³ych przycisków
-		std::cout << "Fold Button Texture: " << start.getTextureRect().width << std::endl;
 	}
 }
 void endingScreen(sf::RenderWindow &window, std::string image)
@@ -85,6 +82,16 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 	{ 
 		std::cout << "No font detected" << e.what(); 
 	}
+	sf::Text bot1Action;
+	std::string action1 = "Player1 action : " + botx.getActionType();
+	bot1Action.setFont(font); bot1Action.setPosition(10, 330);
+	bot1Action.setString(action1); bot1Action.setCharacterSize(25); bot1Action.setFillColor(sf::Color::White);
+
+	sf::Text bot2Action;
+	std::string action2 ="Player2 action: " + boty.getActionType();
+	bot2Action.setFont(font); bot2Action.setPosition(990, 330);
+	bot2Action.setString(action2); bot2Action.setCharacterSize(25); bot2Action.setFillColor(sf::Color::White); 
+
 	sf::Text bot1;
 	bot1.setFont(font); bot1.setPosition(150, 5); 
 	bot1.setString("Player1"); bot1.setCharacterSize(25); bot1.setFillColor(sf::Color::White); //Player1 name
@@ -134,8 +141,8 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 	gamePot.setString(potValueStr); gamePot.setCharacterSize(25); gamePot.setFillColor(sf::Color::White); //Gamepot 
 	
 	sf::Text callValue;
-	int callVal = Player::getHighestBet(); std::string callValStr = std::to_string(callVal); 
-	callValue.setFont(font); callValue.setPosition(950, 530);
+	int callVal = Player::getHighestBet(); std::string callValStr ="Highest bet: " + std::to_string(callVal);
+	callValue.setFont(font); callValue.setPosition(800, 530);
 	callValue.setString(callValStr); callValue.setCharacterSize(25); callValue.setFillColor(sf::Color::White); // Call money
 
 	sf::Text raiseValue;
@@ -239,6 +246,8 @@ void mainScreen(sf::RenderWindow &window, Player player,Bot botx,Bot boty, sf::S
 
 	//drawing
 	{
+		window.draw(bot1Action); 
+		window.draw(bot2Action);
 		window.draw(bot1);
 		window.draw(bot2);
 		window.draw(player1);

@@ -38,11 +38,11 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Ace Of Spades");
     window.setFramerateLimit(60); 
     Pot gamePot(15);
-    AbstractPlayer* abstractPlayer= new Player(cardDeck[0],cardDeck[3], 15, 1000, 15, false);
+    AbstractPlayer* abstractPlayer= new Player(cardDeck[0],cardDeck[3], 15, 1000, 0, false, false);
     Player* player = dynamic_cast<Player*>(abstractPlayer);
-    AbstractPlayer* abstractBot1 = new Bot(cardDeck[1], cardDeck[4], 15, 1000, 15); 
+    AbstractPlayer* abstractBot1 = new Bot(cardDeck[1], cardDeck[4], 15, 1000, 5, false, false);
     Bot* bot1 = dynamic_cast<Bot*>(abstractBot1);   
-    AbstractPlayer* abstractBot2 = new Bot(cardDeck[2], cardDeck[6], 15, 1000, 15);
+    AbstractPlayer* abstractBot2 = new Bot(cardDeck[2], cardDeck[6], 15, 1000, 10, false, false);
     Bot* bot2 = dynamic_cast<Bot*>(abstractBot2);  
     for (int i = 0; i < 6; i++)
     {
@@ -67,43 +67,46 @@ int main()
                 window.close();
             if (showStartScreen == false && player->getTurn()<5)
             {
-                auto mousePosition = sf::Mouse::getPosition(window);
-                auto translatedPosition = window.mapPixelToCoords(mousePosition); 
+                if(player->getIsFolded() == false)
+                {
+                    auto mousePosition = sf::Mouse::getPosition(window);
+                    auto translatedPosition = window.mapPixelToCoords(mousePosition);
 
-                if (action.type == sf::Event::MouseButtonPressed&& action.mouseButton.button == sf::Mouse::Left && plusButton.getGlobalBounds().contains(translatedPosition)&&(player->getBettingValue()+50)<=player->getMoney() && player->getIsActionTaken() == false)
-                {
-                    player->betIncrease();
-                }
-                if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && minusButton.getGlobalBounds().contains(translatedPosition)&&player->getBettingValue()>=50 && player->getIsActionTaken() == false)
-                {
-                    player->betDecrease();
-                }
-                if (AbstractPlayer::getIsRaised() == true&&player->getIsActionTaken()==false) 
-                {
-                    if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && checkOrCallButton.getGlobalBounds().contains(translatedPosition)&&player->getMoney()>=Player::getHighestBet()&& player->getBettingValue() <= player->getMoney())
+                    if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && plusButton.getGlobalBounds().contains(translatedPosition) && (player->getBettingValue() + 50) <= player->getMoney() && player->getIsActionTaken() == false)
                     {
-                        player->call(Player::getHighestBet(),gamePot);
+                        player->betIncrease();
                     }
-                    if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && raiseButton.getGlobalBounds().contains(translatedPosition)&& player->getBettingValue()>Player::getHighestBet()&&player->getBettingValue()<=player->getMoney())
+                    if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && minusButton.getGlobalBounds().contains(translatedPosition) && player->getBettingValue() >= 50 && player->getIsActionTaken() == false)
                     {
-                        player->raise(gamePot);
+                        player->betDecrease();
                     }
-                } 
-                if (AbstractPlayer::getIsRaised() == false && player->getIsActionTaken() == false ) 
-                {
-                    if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && checkOrCallButton.getGlobalBounds().contains(translatedPosition))
+                    if (AbstractPlayer::getIsRaised() == true && player->getIsActionTaken() == false)
                     {
-                        player->check();
+                        if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && checkOrCallButton.getGlobalBounds().contains(translatedPosition) && player->getMoney() >= Player::getHighestBet() && player->getBettingValue() <= player->getMoney())
+                        {
+                            player->call(Player::getHighestBet(), gamePot);
+                        }
+                        if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && raiseButton.getGlobalBounds().contains(translatedPosition) && player->getBettingValue() > Player::getHighestBet() && player->getBettingValue() <= player->getMoney())
+                        {
+                            player->raise(gamePot);
+                        }
                     }
-                    if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && raiseButton.getGlobalBounds().contains(translatedPosition) && player->getBettingValue() > Player::getHighestBet()&& player->getBettingValue() <= player->getMoney())
-                    { 
-                        player->raise(gamePot);
+                    if (AbstractPlayer::getIsRaised() == false && player->getIsActionTaken() == false)
+                    {
+                        if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && checkOrCallButton.getGlobalBounds().contains(translatedPosition))
+                        {
+                            player->check();
+                        }
+                        if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && raiseButton.getGlobalBounds().contains(translatedPosition) && player->getBettingValue() > Player::getHighestBet() && player->getBettingValue() <= player->getMoney())
+                        {
+                            player->raise(gamePot);
+                        }
+                    }
+                    if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && foldButton.getGlobalBounds().contains(translatedPosition) && player->getIsActionTaken() == false)
+                    {
+                        player->fold();
                     }
                 }
-                if (action.type == sf::Event::MouseButtonPressed && action.mouseButton.button == sf::Mouse::Left && foldButton.getGlobalBounds().contains(translatedPosition) && player->getIsActionTaken() == false)
-                {
-					player->fold();
-				}
 
                 if (player->getIsActionTaken() == true)
                 {
@@ -113,7 +116,10 @@ int main()
                     bot2->makeDecision(commonCards, AbstractPlayer::getTurn(), gamePot);
                     AbstractPlayer::raiseReset();
                     AbstractPlayer::turnIncrementer();
-                    player->actionReset();
+                    if (player->getIsFolded() != true)
+                    {
+                        player->actionReset();
+					}              
                 }
             }
             else if((showStartScreen == false && player->getTurn() == 5))
@@ -146,9 +152,9 @@ int main()
                 endingScreen(window, "images/lose.jpg");
             else
                 mainScreen(window, *player,*bot1,*bot2, foldButton, checkOrCallButton, raiseButton, moneyButton, plusButton, minusButton, gamePot, commonCards, AbstractPlayer::getTurn());
-
-            std::cout<<bot1->calculateChance(commonCards,player->getTurn())<<" //1" << std::endl; 
-            std::cout << bot2->calculateChance(commonCards, player->getTurn())<<" //2" << std::endl;
+            std::cout<<AbstractPlayer::getTurn()<<" //1" << std::endl;
+          //  std::cout<<bot1->calculateChance(commonCards,player->getTurn())<<" //1" << std::endl; 
+            //std::cout << bot2->calculateChance(commonCards, player->getTurn())<<" //2" << std::endl;
         }
         window.display();
     }

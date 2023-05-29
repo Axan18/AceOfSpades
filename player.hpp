@@ -16,13 +16,15 @@ class AbstractPlayer
 protected:
     int bettingValue, money, wholeBet;
     bool isActionTaken;
+    bool isFolded;
     std::string hand1, hand2;
     static int highestBet;
     static bool isRaised;
     static int turn;
 
 public:
-    AbstractPlayer(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken);
+    AbstractPlayer();
+    AbstractPlayer(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken, bool isFolded);
     static bool getIsRaised();
     static int getHighestBet();
     static int getTurn();
@@ -51,7 +53,7 @@ private:
     bool isFolded;
     std::string hand1, hand2;
 public:
-    Player(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken);
+    Player(std::string card1, std::string card2, int bettingValue, int money, int wholeBet, bool isActionTaken, bool isFolded);
     int betIncrease() override;
     int betDecrease() override;
     int call(int highestBet, Pot& pot) override;
@@ -68,11 +70,14 @@ public:
 };
 class Bot : public AbstractPlayer
 {
+private:
     int bettingValue, money, wholeBet;
-    bool isFolded;
+    std::string actionType;
+    bool isFolded; 
+    bool isActionTaken;
     std::string hand1, hand2;
 public:
-    Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet);
+    Bot(std::string card1, std::string card2, int bettingValue, int money, int wholeBet,bool isActionTaken, bool isFolded);
     int betIncrease() override;
     int betDecrease() override;
     int call(int highestBet, Pot& pot) override;
@@ -87,6 +92,7 @@ public:
     std::string getCard(int index) const override;
     double calculateChance(deckOfCards commonCards, int turn);  
     double oddsCalculator(int turn, std::string color1, std::string color2, int value1, int value2, deckOfCards tableCards);  
-    void makeDecision(deckOfCards commonCards, int turn, Pot &gamePot);  
+    void makeDecision(deckOfCards commonCards, int turn, Pot &gamePot); 
+    std::string getActionType() const;
 };
 #endif
